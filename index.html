@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق الأغاني الوطنية المصرية</title>
+    <style>
+        :root {
+            --primary-color: #ce1126; /* الأحمر المصري */
+            --secondary-color: #792427;
+            --gold-color: #c0930c; /* الذهبي */
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            padding-bottom: 120px; /* مساحة للمشغل السفلي */
+        }
+
+        header {
+            background: linear-gradient(135deg, #000000 0%, var(--secondary-color) 50%, #000000 100%);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        header p {
+            color: var(--gold-color);
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* قائمة الأغاني */
+        .playlist {
+            list-style: none;
+        }
+
+        .track-item {
+            background-color: var(--card-bg);
+            margin-bottom: 10px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 5px solid transparent;
+        }
+
+        .track-item:hover {
+            background-color: #282828;
+            transform: translateX(-5px);
+            border-right-color: var(--primary-color);
+        }
+
+        .track-item.active {
+            background-color: #282828;
+            border-right-color: var(--gold-color);
+        }
+
+        .track-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .track-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--gold-color);
+            min-width: 30px;
+        }
+
+        .track-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .play-icon {
+            color: var(--gold-color);
+            font-size: 1.2rem;
+        }
+
+        .track-item.active .track-name {
+            color: var(--gold-color);
+        }
+
+        /* المشغل السفلي الثابت */
+        .player-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #181818;
+            border-top: 2px solid var(--gold-color);
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.6);
+            z-index: 1000;
+        }
+
+        .now-playing {
+            text-align: center;
+        }
+
+        .now-playing .title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--gold-color);
+            margin-bottom: 5px;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 30px;
+            background-color: #f1f3f4;
+        }
+
+        /* للتجاوب مع الشاشات الصغيرة */
+        @media (max-width: 480px) {
+            header h1 { font-size: 1.6rem; }
+            .track-name { font-size: 1rem; }
+            body { padding-bottom: 140px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>تحيا مصر 🇪🇬</h1>
+        <p>تطبيق الأغاني الوطنية المصرية الخالدة</p>
+    </header>
+
+    <div class="container">
+        <ul class="playlist" id="playlist">
+            <!-- سيتم توليد الأغاني هنا بواسطة الجافاسكريبت لسهولة التعديل -->
+        </ul>
+    </div>
+
+    <!-- المشغل المركزي الثابت في الأسفل -->
+    <div class="player-footer">
+        <div class="now-playing">
+            <div class="title" id="current-title">اختر أغنية للتشغيل</div>
+        </div>
+        <audio id="audio-player" controls autoplay src=""></audio>
+    </div>
+
+    <script>
+        // قائمة الأغاني العشرين التي طلبتها
+        // ملاحظة: قم باستبدال الروابط '# ' بروابط ملفات الصوت الحقيقية (mp3) لديك
+        const songs = [
+            { id: 1, title: "النشيد الوطني: بلادي بلادي", url: "songs/belady.mp3" },
+            { id: 2, title: "يا مصري بتعمليها ازاي؟", url: "songs/ya_masry.mp3" },
+            { id: 3, title: "يا حبيبتي يا مصر", url: "songs/ya_habibty_ya_masr.mp3" },
+            { id: 4, title: "بحلف بسماها وبترابها", url: "songs/bahelf_besmaha.mp3" },
+            { id: 5, title: "سلم على الشهيد اللي معاك", url: "songs/salem_3ala_alshaheed.mp3" },
+            { id: 6, title: "تسلم الأيادي", url: "songs/teslam_el_ayady.mp3" },
+            { id: 7, title: "تحيا مصر يا ريس", url: "songs/tahya_masr_rayes.mp3" },
+            { id: 8, title: "مش من بلدنا", url: "songs/mesh_men_baladna.mp3" },
+            { id: 9, title: "فيها حاجة حلوة", url: "songs/feeha_haga_helwa.mp3" },
+            { id: 10, title: "قالوا إيه علينا؟ (صاعقة منسية)", url: "songs/qaloo_eih.mp3" },
+            { id: 11, title: "رسمنا على القلب وجه الوطن", url: "songs/rasamna_3ala_elqalb.mp3" },
+            { id: 12, title: "فدائي فدائي", url: "songs/fedayee.mp3" },
+            { id: 13, title: "جيش مصر يا درع الأمان", url: "songs/jaish_masr_der3.mp3" },
+            { id: 14, title: "ابنوا بيوتكم وعلوها رصوا العساكر", url: "songs/ebno_beyotkom.mp3" },
+            { id: 15, title: "يا جيش مصر زي الشمس", url: "songs/ya_jaish_masr.mp3" },
+            { id: 16, title: "خير جند الأرض", url: "songs/khair_jond_elard.mp3" },
+            { id: 17, title: "وحش الجيش المصري (مصنع رجال)", url: "songs/wahsh_eljaish.mp3" },
+            { id: 18, title: "يا الميادين", url: "songs/ya_elmayadeen.mp3" },
+            { id: 19, title: "إزاي (أغنية الثورة الشهيرة)", url: "songs/ezzay.mp3" },
+            { id: 20, title: "صوت الحرية", url: "songs/soat_elhorreya.mp3" }
+        ];
+
+        const playlistElement = document.getElementById('playlist');
+        const audioPlayer = document.getElementById('audio-player');
+        const currentTitleElement = document.getElementById('current-title');
+
+        // بناء قائمة الأغاني واجهة المستخدم
+        songs.forEach((song, index) => {
+            const li = document.createElement('li');
+            li.className = 'track-item';
+            li.innerHTML = `
+                <div class="track-info">
+                    <span class="track-number">${song.id}</span>
+                    <span class="track-name">${song.title}</span>
+                </div>
+                <span class="play-icon">▶</span>
+            `;
+
+            // عند الضغط على الأغنية
+            li.addEventListener('click', () => {
+                playSong(index);
+            });
+
+            playlistElement.appendChild(li);
+        });
+
+        let currentSongIndex = 0;
+
+        function playSong(index) {
+            currentSongIndex = index;
+            const song = songs[index];
+            
+            // تغيير رابط الصوت والعنوان
+            audioPlayer.src = song.url;
+            currentTitleElement.innerText = `جاري التشغيل: ${song.title}`;
+
+            // تحديث الشكل الجمالي للاختيار
+            const items = document.querySelectorAll('.track-item');
+            items.forEach(item => item.classList.remove('active'));
+            items[index].classList.add('active');
+
+            // تشغيل الصوت
+            audioPlayer.play().catch(error => {
+                console.log("الرجاء التحقق من مسار ملف الـ MP3 للأغنية المحددة.");
+            });
+        }
+
+        // الانتقال التلقائي للأغنية التالية عند انتهاء الحالية
+        audioPlayer.addEventListener('ended', () => {
+            if (currentSongIndex < songs.length - 1) {
+                playSong(currentSongIndex + 1);
+            } else {
+                playSong(0); // العودة للأولى إذا انتهت القائمة
+            }
+        });
+    </script>
+</body>
+  </html>
+  
