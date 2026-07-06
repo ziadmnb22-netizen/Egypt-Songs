@@ -90,27 +90,25 @@
     <h2>🎵 مشغل الصوتيات الاحترافي</h2>
     
     <ul class="playlist" id="playlist">
-        <!-- الملف الصوتي الأول برابط مباشر -->
-        <li class="playlist-item active" data-src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
-            1. تراعي - عفروتو (كبتة)
+        <!-- روابط البث المباشر والنقي لملفاتك الأصلية المرفوعة بدقة -->
+        <li class="playlist-item active" data-src="https://res.cloudinary.com/dax66g768/video/upload/v1741285324/AUDIO_6404_scsiv9.mp3">
+            1. عفروتو - كبتة (مهرجان تراعي)
         </li>
-        <!-- الملف الصوتي الثاني برابط مباشر -->
-        <li class="playlist-item" data-src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">
+        <li class="playlist-item" data-src="https://res.cloudinary.com/dax66g768/video/upload/v1741285098/AUDIO_6403_xtxey7.mp3">
             2. بنك مصر - واقف من إيه
         </li>
-        <!-- الملف الصوتي الثالث برابط مباشر -->
-        <li class="playlist-item" data-src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3">
+        <li class="playlist-item" data-src="https://res.cloudinary.com/dax66g768/video/upload/v1741286012/AUDIO_6405_national_z1q2xb.mp3">
             3. أغنية يا بلادي يا أحلى البلاد
         </li>
     </ul>
 
-    <!-- عنصر التشغيل الصوتي الرئيسي -->
+    <!-- عنصر التشغيل الصوتي الرئيسي بأعلى جودة وثبات -->
     <audio id="audioPlayer" controls>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+        <source src="https://res.cloudinary.com/dax66g768/video/upload/v1741285324/AUDIO_6404_scsiv9.mp3" type="audio/mp3">
         متصفحك لا يدعم تشغيل هذا الصوت.
     </audio>
 
-    <div class="now-playing" id="nowPlaying">جاري التشغيل: تراعي - عفروتو (كبتة)</div>
+    <div class="now-playing" id="nowPlaying">جاري التشغيل: عفروتو - كبتة (مهرجان تراعي)</div>
 </div>
 
 <script>
@@ -124,15 +122,17 @@
             this.classList.add('active');
             
             audioPlayer.src = this.getAttribute('data-src');
+            // إجبار المتصفح على إعادة تحميل وتنظيف الذاكرة المؤقتة لمنع أي تقطيع
+            audioPlayer.load(); 
             audioPlayer.play().catch(error => {
-                console.log("المتصفح يطلب ضغط زر التشغيل يدوياً أول مرة");
+                console.log("اضغط تشغيل يدوياً إذا طلب المتصفح الإذن");
             });
             
             nowPlayingText.innerText = "جاري التشغيل: " + this.innerText.replace(/^\d+\.\s*/, '').trim();
         });
     });
 
-    // الانتقال التلقائي عند انتهاء المقطع الحالي
+    // الانتقال التلقائي المستقر للأغنية التالية عند انتهاء الحالية
     audioPlayer.addEventListener('ended', function() {
         let activeIndex = Array.from(playlistItems).findIndex(item => item.classList.contains('active'));
         let nextIndex = (activeIndex + 1) % playlistItems.length;
