@@ -3,113 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق المشغل الصوتي الوطني</title>
+    <title>تطبيق المشغل الصوتي</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            color: #333;
         }
         .player-container {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.95);
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 350px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            width: 360px;
             text-align: center;
         }
         h2 {
-            color: #333;
+            margin-top: 0;
+            color: #1e3c72;
+            font-size: 24px;
             margin-bottom: 20px;
         }
         .playlist {
             list-style: none;
             padding: 0;
-            margin-bottom: 25px;
+            margin: 0 0 25px 0;
+            max-height: 200px;
+            overflow-y: auto;
         }
         .playlist-item {
-            padding: 12px;
+            padding: 12px 15px;
             margin: 8px 0;
-            background-color: #f8f9fa;
+            background-color: #f1f3f5;
             border: 1px solid #e9ecef;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            color: #495057;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            font-size: 15px;
+            text-align: right;
+            display: flex;
+            align-items: center;
         }
         .playlist-item:hover {
             background-color: #e2e6ea;
+            transform: translateY(-2px);
         }
         .playlist-item.active {
-            background-color: #007bff;
+            background-color: #1e3c72;
             color: white;
-            border-color: #007bff;
+            border-color: #1e3c72;
+        }
+        .playlist-item::before {
+            content: "🎵";
+            margin-left: 10px;
+        }
+        .playlist-item.active::before {
+            content: "🔊";
         }
         audio {
             width: 100%;
             margin-top: 10px;
+            outline: none;
         }
         .now-playing {
             margin-top: 15px;
-            font-size: 0.9em;
+            font-size: 13px;
             color: #6c757d;
+            font-weight: bold;
+            background: #e9ecef;
+            padding: 8px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
 <div class="player-container">
-    <h2>مشغل الملفات الصوتية</h2>
+    <h2>🎵 مشغل الصوتيات الخاص بك</h2>
     
     <ul class="playlist" id="playlist">
-        <!-- الملف الصوتي الأول -->
-        <li class="playlist-item active" data-src="https://res.cloudinary.com/dax66g768/video/upload/v1741285098/AUDIO_6403_xtxey7.mp3">
-            1. أغنية بنك مصر (إزاي وازاي)
+        <!-- الأغنية الأولى: عفروتو - كبتة -->
+        <li class="playlist-item active" data-src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+            1. عفروتو - كبتة (Albumaty)
         </li>
-        <!-- الملف الصوتي الثاني -->
-        <li class="playlist-item" data-src="https://res.cloudinary.com/dax66g768/video/upload/v1741285324/AUDIO_6404_scsiv9.mp3">
-            2. أغنية يا بلادي يا أحلى البلاد
+        <!-- الأغنية الثانية: بنك مصر - يا مصر بتعملي إيه -->
+        <li class="playlist-item" data-src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">
+            2. بنك مصر - واقفت من إيه
         </li>
     </ul>
 
-    <!-- عنصر التشغيل الصوتي الرئيسي -->
+    <!-- عنصر التشغيل الصوتي -->
     <audio id="audioPlayer" controls>
-        <source src="https://res.cloudinary.com/dax66g768/video/upload/v1741285098/AUDIO_6403_xtxey7.mp3" type="audio/mp3">
-        متصفحك لا يدعم تشغيل الملفات الصوتية.
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+        متصفحك لا يدعم تشغيل الصوت.
     </audio>
 
-    <div class="now-playing" id="nowPlaying">جاري التشغيل: أغنية بنك مصر (إزاي وازاي)</div>
+    <div class="now-playing" id="nowPlaying">جاري التشغيل: عفروتو - كبتة (Albumaty)</div>
 </div>
 
 <script>
     const audioPlayer = document.getElementById('audioPlayer');
-    const playlist = document.getElementById('playlist');
     const playlistItems = document.querySelectorAll('.playlist-item');
     const nowPlayingText = document.getElementById('nowPlaying');
 
     playlistItems.forEach(item => {
         item.addEventListener('click', function() {
-            // إزالة الحالة النشطة من الأغنية السابقة
             playlistItems.forEach(i => i.classList.remove('active'));
-            
-            // إضافة الحالة النشطة للأغنية المختارة
             this.classList.add('active');
             
-            // تغيير مصدر الصوت وتشغيله تلقائياً
             audioPlayer.src = this.getAttribute('data-src');
-            audioPlayer.play();
+            audioPlayer.play().catch(error => console.log("اضغط تشغيل يدوياً إذا منع المتصفح التشغيل التلقائي"));
             
-            // تحديث نص "جاري التشغيل"
-            nowPlayingText.innerText = "جاري التشغيل: " + this.innerText.trim();
+            nowPlayingText.innerText = "جاري التشغيل: " + this.innerText.replace(/^\d+\.\s*/, '').trim();
         });
     });
 
-    // الانتقال التلقائي للأغنية التالية عند انتهاء الأغنية الحالية
+    // تشغيل الأغنية التالية تلقائياً عند الانتهاء
     audioPlayer.addEventListener('ended', function() {
         let activeIndex = Array.from(playlistItems).findIndex(item => item.classList.contains('active'));
         let nextIndex = (activeIndex + 1) % playlistItems.length;
